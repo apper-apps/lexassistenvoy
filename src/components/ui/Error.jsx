@@ -21,10 +21,9 @@ function ErrorMessage({ message, onRetry, className }) {
         <Button onClick={onRetry} variant="primary">
           Try Again
         </Button>
-      )}
-    </motion.div>
+)}
+  </motion.div>
   )
-}
 }
 
 export default ErrorMessage;

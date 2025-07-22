@@ -176,34 +176,13 @@ This clause means that both parties need to give 30 days written notice before e
 • Section 7.1 discusses breach of contract remedies
 • Appendix B contains the notice requirements template
 
-**💡 Practical Impact**: 
-This gives you a safety net - no one can just walk away immediately if there's a problem.`,
+What would you like me to explain next?`,
 
-      "document-creation": `I'll help you create professional legal documents. Based on your request for "${message}", here's what I can generate:
+        "document-creation": await handleDocumentCreationRequest(message),
 
-**📄 Available Templates:**
+        general: `Hello! I'm your AI legal assistant. I can help you with:
 
-• **Privacy Policy**: GDPR/CCPA compliant privacy policy
-• **Terms of Service**: Comprehensive terms and conditions
-• **Invoice Template**: Professional invoice with legal protections
-• **Disclaimer**: Liability limitation and risk disclosure
-• **Cookie Consent**: Cookie usage and consent management
-
-**✨ Custom Generation Process:**
-1. I'll ask you specific questions about your business
-2. Generate a tailored document based on your needs
-3. Include industry-specific clauses where relevant
-4. Provide explanations for each section
-
-**🎯 What I need from you:**
-- Business type and location
-- Specific requirements or concerns
-- Industry regulations that apply
-
-Ready to start creating your document? What type of business are you in?`,
-
-      general: `Hello! I'm your AI legal assistant. I can help you with:
-
+**🔧 Available Tools:**
 **🔧 Available Tools:**
 • **Contract Comparison** - Compare agreements and find differences
 • **Risk Assessment** - Identify potential legal risks and issues  
@@ -222,8 +201,129 @@ What would you like to work on today? You can upload a document or select a tool
       console.error("AI Response generation failed:", error);
       throw new Error("Unable to generate response at this time");
     }
+};
+
+  const handleDocumentCreationRequest = async (message) => {
+    const lowerMessage = message.toLowerCase();
+    
+    if (lowerMessage.includes('privacy policy')) {
+      return `I'll help you create a comprehensive privacy policy. To generate a document tailored to your business, I need some information:
+
+**🏢 Business Information Required:**
+• Company name and legal entity type
+• Business address and jurisdiction
+• Industry/business type
+• Website URL (if applicable)
+
+**📊 Data Collection Details:**
+• What personal information do you collect?
+• How do you use customer data?
+• Do you use cookies or tracking?
+• Do you share data with third parties?
+
+**🌍 Compliance Requirements:**
+• Do you serve EU customers? (GDPR)
+• California residents? (CCPA)
+• Other specific jurisdictions?
+
+Please provide these details and I'll generate a professional privacy policy for your business.`;
+    }
+    
+    if (lowerMessage.includes('terms of service') || lowerMessage.includes('terms and conditions')) {
+      return `I'll create comprehensive terms of service for your business. Please provide:
+
+**🏢 Company Details:**
+• Business name and legal structure
+• Registered business address
+• Industry and service type
+• Website/platform details
+
+**📋 Service Information:**
+• What products/services do you offer?
+• Pricing structure and payment terms
+• Refund/cancellation policies
+• User account requirements
+
+**⚖️ Legal Considerations:**
+• Governing jurisdiction/laws
+• Dispute resolution preferences
+• Limitation of liability needs
+• Intellectual property concerns
+
+Share these details and I'll draft professional terms of service.`;
+    }
+    
+    if (lowerMessage.includes('invoice')) {
+      return `I'll create a professional invoice template. Please provide:
+
+**🏢 Your Business Information:**
+• Company name and registration details
+• Business address and contact info
+• Tax ID/VAT number (if applicable)
+• Logo requirements
+
+**💼 Invoice Preferences:**
+• Payment terms (Net 30, due on receipt, etc.)
+• Accepted payment methods
+• Late payment fees/interest
+• Currency preferences
+
+**📋 Service Details:**
+• Types of services/products you bill for
+• Typical billing frequency
+• Any industry-specific requirements
+
+I'll create a comprehensive invoice template with all legal protections included.`;
+    }
+    
+    if (lowerMessage.includes('disclaimer')) {
+      return `I'll draft a legal disclaimer for your business. I need to understand:
+
+**🏢 Business Context:**
+• Company name and industry
+• Type of services/products offered
+• Target audience/customers
+• Platform (website, app, physical location)
+
+**⚠️ Risk Areas to Address:**
+• Professional advice disclaimers needed?
+• Product liability limitations?
+• Service availability/accuracy disclaimers?
+• Third-party content disclaimers?
+
+**⚖️ Legal Requirements:**
+• Jurisdiction for governing law
+• Specific industry regulations
+• Insurance/professional licensing details
+
+Provide these details and I'll create a comprehensive disclaimer protecting your business interests.`;
+    }
+
+    return `I'll help you create professional legal documents. Based on your request for "${message}", here's what I can generate:
+
+**📄 Available Templates:**
+
+• **Privacy Policy**: GDPR/CCPA compliant privacy policy
+• **Terms of Service**: Comprehensive terms and conditions  
+• **Invoice Template**: Professional invoice with legal protections
+• **Disclaimer**: Liability limitation and risk disclosure
+• **Cookie Consent**: Cookie usage and consent management
+
+**✨ Custom Generation Process:**
+1. I'll ask you specific questions about your business
+2. Generate a tailored document based on your needs
+3. Include industry-specific clauses where relevant
+4. Provide explanations for each section
+
+**🎯 What I need from you:**
+- Business type and location
+- Specific requirements or concerns
+- Industry regulations that apply
+
+Ready to start creating your document? What type of business are you in?`;
   };
-const handleFileUpload = async (files) => {
+
+  const handleFileUpload = async (files) => {
     const filesArray = Array.isArray(files) ? files : [files];
     const message = `I've uploaded ${filesArray.length} document(s). Please analyze ${filesArray.length === 1 ? 'it' : 'them'}.`;
     await handleSendMessage(message, filesArray);
@@ -283,24 +383,13 @@ const handleFileUpload = async (files) => {
   }
 
   return (
-    <div className="h-screen flex flex-col bg-gray-50">
+<div className="h-screen flex flex-col bg-gray-50">
       {/* Header */}
       <div className="bg-white border-b border-gray-200 px-6 py-4">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center">
           <div>
             <h1 className="text-2xl font-bold text-gray-900">{getToolTitle(toolType)}</h1>
             <p className="text-gray-600 mt-1">{getToolDescription(toolType)}</p>
-          </div>
-          
-          <div className="flex items-center gap-3">
-            <Button
-              variant="outline"
-              onClick={() => setShowUpload(!showUpload)}
-              className="flex items-center gap-2"
-            >
-              <ApperIcon name="Upload" className="w-4 h-4" />
-              Upload Files
-            </Button>
           </div>
         </div>
       </div>
@@ -317,10 +406,10 @@ const handleFileUpload = async (files) => {
         </motion.div>
       )}
 
-      {/* Chat Content */}
+{/* Chat Content */}
       <div className="flex-1 flex flex-col min-h-0">
         {conversation.messages.length === 0 ? (
-          <div className="flex-1 flex flex-col items-center justify-center p-6">
+          <div className="flex-1 flex flex-col items-center justify-center p-6 pb-24">
             <Empty
               title={`Welcome to ${getToolTitle(toolType)}`}
               description={getToolDescription(toolType)}
@@ -328,28 +417,41 @@ const handleFileUpload = async (files) => {
               className="mb-8"
             />
             
-            <Card className="w-full max-w-4xl">
+            <Card className="w-full max-w-4xl mb-8">
               <CardContent className="p-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Suggested Actions</h3>
-<SuggestedPrompts 
+                <SuggestedPrompts 
                   toolType={toolType} 
                   onPromptClick={handlePromptClick}
                 />
               </CardContent>
             </Card>
           </div>
-) : (
+        ) : (
           <ChatMessages messages={conversation.messages} loading={loading} />
         )}
       </div>
-      
-      {/* Message Input - Positioned with better desktop spacing */}
-      <div className="bg-white border-t border-gray-200 mb-4 mx-4 rounded-lg shadow-sm">
-        <MessageInput
-          onSend={(message) => handleSendMessage(message)}
-          disabled={loading}
-          placeholder={`Ask about ${getToolTitle(toolType).toLowerCase()}...`}
-        />
+{/* Message Input with Upload Button */}
+      <div className="bg-white border-t border-gray-200 p-4">
+        <div className="flex items-end gap-3 max-w-6xl mx-auto">
+          <div className="flex-1">
+            <MessageInput
+              onSend={(message) => handleSendMessage(message)}
+              disabled={loading}
+              placeholder={`Ask about ${getToolTitle(toolType).toLowerCase()}...`}
+            />
+          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setShowUpload(!showUpload)}
+            className="flex items-center gap-2 px-3 py-2 min-w-[100px]"
+            title="Upload files"
+          >
+            <ApperIcon name="Paperclip" className="w-4 h-4" />
+            <span className="hidden sm:inline">Files</span>
+          </Button>
+        </div>
       </div>
     </div>
   );

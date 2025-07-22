@@ -14,14 +14,18 @@ class ConversationService {
     });
   }
 
-  async getById(id) {
+async getById(id) {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
-        const conversation = this.conversations.find(c => c.Id === parseInt(id));
-        if (conversation) {
-          resolve({ ...conversation });
-        } else {
-          reject(new Error("Conversation not found"));
+        try {
+          const conversation = this.conversations.find(c => c.Id === parseInt(id));
+          if (conversation) {
+            resolve({ ...conversation });
+          } else {
+            reject(new Error(`Conversation with ID ${id} not found`));
+          }
+        } catch (error) {
+          reject(new Error("Failed to retrieve conversation"));
         }
       }, 200);
     });
@@ -44,34 +48,42 @@ class ConversationService {
     });
   }
 
-  async update(id, updates) {
+async update(id, updates) {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
-        const index = this.conversations.findIndex(c => c.Id === parseInt(id));
-        if (index !== -1) {
-          this.conversations[index] = {
-            ...this.conversations[index],
-            ...updates,
-            Id: parseInt(id),
-            updatedAt: new Date().toISOString()
-          };
-          resolve({ ...this.conversations[index] });
-        } else {
-          reject(new Error("Conversation not found"));
+        try {
+          const index = this.conversations.findIndex(c => c.Id === parseInt(id));
+          if (index !== -1) {
+            this.conversations[index] = {
+              ...this.conversations[index],
+              ...updates,
+              Id: parseInt(id),
+              updatedAt: new Date().toISOString()
+            };
+            resolve({ ...this.conversations[index] });
+          } else {
+            reject(new Error(`Cannot update: Conversation with ID ${id} not found`));
+          }
+        } catch (error) {
+          reject(new Error("Failed to update conversation"));
         }
       }, 300);
     });
   }
 
-  async delete(id) {
+async delete(id) {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
-        const index = this.conversations.findIndex(c => c.Id === parseInt(id));
-        if (index !== -1) {
-          const deleted = this.conversations.splice(index, 1)[0];
-          resolve(deleted);
-        } else {
-          reject(new Error("Conversation not found"));
+        try {
+          const index = this.conversations.findIndex(c => c.Id === parseInt(id));
+          if (index !== -1) {
+            const deleted = this.conversations.splice(index, 1)[0];
+            resolve(deleted);
+          } else {
+            reject(new Error(`Cannot delete: Conversation with ID ${id} not found`));
+          }
+        } catch (error) {
+          reject(new Error("Failed to delete conversation"));
         }
       }, 200);
     });

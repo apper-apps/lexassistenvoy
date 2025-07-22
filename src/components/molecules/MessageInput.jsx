@@ -22,10 +22,10 @@ const MessageInput = ({ onSend, disabled = false, placeholder = "Ask about your 
     }
   };
 
-  return (
+return (
     <motion.form
       onSubmit={handleSubmit}
-      className="flex gap-3 p-4 bg-white border-t border-gray-200"
+      className="flex gap-3 p-4"
       initial={{ y: 20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
     >

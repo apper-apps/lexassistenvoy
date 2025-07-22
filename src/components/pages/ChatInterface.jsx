@@ -1,22 +1,24 @@
-import { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { motion } from "framer-motion";
+import ApperIcon from "@/components/ApperIcon";
+import Empty from "@/components/ui/Empty";
+import Error from "@/components/ui/Error";
 import ChatMessages from "@/components/organisms/ChatMessages";
 import SuggestedPrompts from "@/components/organisms/SuggestedPrompts";
 import MessageInput from "@/components/molecules/MessageInput";
 import FileUpload from "@/components/molecules/FileUpload";
-import Empty from "@/components/ui/Empty";
-import ApperIcon from "@/components/ApperIcon";
-import Button from "@/components/atoms/Button";
 import { Card, CardContent } from "@/components/atoms/Card";
+import Button from "@/components/atoms/Button";
 import conversationService from "@/services/api/conversationService";
 
 const ChatInterface = () => {
   const { toolType = "general" } = useParams();
-  const [conversation, setConversation] = useState(null);
+const [conversation, setConversation] = useState(null);
   const [loading, setLoading] = useState(false);
   const [showUpload, setShowUpload] = useState(false);
+  const [promptTriggeredUpload, setPromptTriggeredUpload] = useState(false);
 
   useEffect(() => {
     initializeConversation();
@@ -74,21 +76,43 @@ const ChatInterface = () => {
         messages: [...conversation.messages, userMessage, assistantMessage]
       });
 
-    } catch (error) {
+} catch (error) {
       console.error("Error sending message:", error);
-      toast.error("Failed to get AI response");
-    } finally {
+      toast.error("Failed to get AI response. Please try again or check your connection.");
+      
+      // Add a fallback response for better user experience
+      const fallbackMessage = {
+        id: Date.now() + 2,
+        role: "assistant", 
+        content: "I apologize, but I'm having trouble connecting right now. Please try uploading your document again or refresh the page. If the problem persists, you can still use the suggested prompts below to get started.",
+        timestamp: new Date()
+      };
+      
+      setConversation(prev => ({
+        ...prev,
+        messages: [...prev.messages, fallbackMessage]
+      }));
+} finally {
       setLoading(false);
     }
   };
 
   const generateAIResponse = async (tool, message, files = []) => {
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    try {
+      // Simulate API delay with potential timeout
+      await new Promise((resolve, reject) => {
+        const timeout = setTimeout(() => {
+          // Simulate random API failures (10% chance)
+          if (Math.random() < 0.1) {
+            reject(new Error("API timeout"));
+          } else {
+            resolve();
+          }
+        }, 1500);
+      });
 
-    const responses = {
-      comparison: `I'll help you compare these contracts. Based on your request "${message}", I can analyze the following aspects:
-
+      const responses = {
+        comparison: `I'll help you compare these contracts. Based on your request "${message}", I can analyze the following aspects:
 • **Key Differences**: I'll identify structural and content differences between contracts
 • **Pricing Terms**: Compare costs, payment schedules, and fee structures  
 • **Legal Obligations**: Highlight different responsibilities and requirements
@@ -191,16 +215,39 @@ Ready to start creating your document? What type of business are you in?`,
 ${message.toLowerCase().includes("contract") ? "I see you're asking about contracts. I can analyze, compare, or explain any contract terms." : "I can analyze legal documents, explain complex terms, and help you understand your legal obligations."}
 
 What would you like to work on today? You can upload a document or select a tool from the sidebar to get started.`
-    };
+};
 
-    return responses[tool] || responses.general;
+      return responses[tool] || responses.general;
+    } catch (error) {
+      console.error("AI Response generation failed:", error);
+      throw new Error("Unable to generate response at this time");
+    }
   };
-
-  const handleFileUpload = async (files) => {
+const handleFileUpload = async (files) => {
     const filesArray = Array.isArray(files) ? files : [files];
     const message = `I've uploaded ${filesArray.length} document(s). Please analyze ${filesArray.length === 1 ? 'it' : 'them'}.`;
     await handleSendMessage(message, filesArray);
     setShowUpload(false);
+    setPromptTriggeredUpload(false);
+  };
+
+  const handlePromptClick = async (prompt) => {
+    // Send the prompt message first
+    await handleSendMessage(prompt);
+    
+    // For prompts that typically need file analysis, suggest file upload
+    const uploadePrompts = [
+      "Compare two vendor contracts",
+      "Identify potential risks in this contract", 
+      "Summarize this document in plain English",
+      "Explain this clause in simple terms"
+    ];
+    
+    if (uploadePrompts.some(p => prompt.includes(p.split(' ').slice(0, 3).join(' ')))) {
+      setPromptTriggeredUpload(true);
+      setShowUpload(true);
+      toast.info("Upload your document to get a detailed analysis");
+    }
   };
 
   const getToolTitle = (tool) => {
@@ -284,17 +331,20 @@ What would you like to work on today? You can upload a document or select a tool
             <Card className="w-full max-w-4xl">
               <CardContent className="p-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Suggested Actions</h3>
-                <SuggestedPrompts 
+<SuggestedPrompts 
                   toolType={toolType} 
-                  onPromptClick={(prompt) => handleSendMessage(prompt)}
+                  onPromptClick={handlePromptClick}
                 />
               </CardContent>
             </Card>
           </div>
-        ) : (
+) : (
           <ChatMessages messages={conversation.messages} loading={loading} />
         )}
-        
+      </div>
+      
+      {/* Message Input - Positioned with better desktop spacing */}
+      <div className="bg-white border-t border-gray-200 mb-4 mx-4 rounded-lg shadow-sm">
         <MessageInput
           onSend={(message) => handleSendMessage(message)}
           disabled={loading}

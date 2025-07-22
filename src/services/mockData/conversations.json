@@ -1,0 +1,79 @@
+[
+  {
+    "Id": 1,
+    "toolType": "comparison",
+    "messages": [
+      {
+        "id": "msg1",
+        "role": "user",
+        "content": "I need to compare two vendor contracts",
+        "attachments": [],
+        "timestamp": "2024-01-15T10:30:00Z"
+      },
+      {
+        "id": "msg2",
+        "role": "assistant",
+        "content": "I'll help you compare vendor contracts. Please upload both contracts and I'll analyze the key differences, pricing terms, obligations, and potential risks. What specific aspects are you most concerned about?",
+        "timestamp": "2024-01-15T10:30:15Z"
+      }
+    ],
+    "createdAt": "2024-01-15T10:30:00Z",
+    "updatedAt": "2024-01-15T10:30:15Z"
+  },
+  {
+    "Id": 2,
+    "toolType": "risk-assessment",
+    "messages": [
+      {
+        "id": "msg3",
+        "role": "user",
+        "content": "Can you check this contract for potential risks?",
+        "attachments": [
+          {
+            "id": "file1",
+            "name": "service_agreement.pdf",
+            "type": "application/pdf",
+            "content": "Sample contract content for risk assessment"
+          }
+        ],
+        "timestamp": "2024-01-15T11:15:00Z"
+      },
+      {
+        "id": "msg4",
+        "role": "assistant",
+        "content": "I've analyzed your service agreement and identified several potential risks:\n\n• **High Risk**: Unlimited liability clause in Section 8\n• **Medium Risk**: Ambiguous termination conditions\n• **Low Risk**: Payment terms could be more specific\n\nWould you like me to explain any of these risks in detail?",
+        "timestamp": "2024-01-15T11:15:30Z"
+      }
+    ],
+    "createdAt": "2024-01-15T11:15:00Z",
+    "updatedAt": "2024-01-15T11:15:30Z"
+  },
+  {
+    "Id": 3,
+    "toolType": "tldr",
+    "messages": [
+      {
+        "id": "msg5",
+        "role": "user",
+        "content": "Please summarize this privacy policy in plain English",
+        "attachments": [
+          {
+            "id": "file2",
+            "name": "privacy_policy.docx",
+            "type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            "content": "Privacy policy content for TLDR generation"
+          }
+        ],
+        "timestamp": "2024-01-15T14:22:00Z"
+      },
+      {
+        "id": "msg6",
+        "role": "assistant",
+        "content": "Here's your privacy policy in plain English:\n\n• **Data Collection**: They collect your name, email, and usage data\n• **Data Use**: Used for service improvement and marketing\n• **Data Sharing**: Only shared with service providers, not sold\n• **Your Rights**: You can request data deletion anytime\n• **Cookies**: Used for analytics and preferences\n\n**Bottom Line**: Standard privacy practices with good user control options.",
+        "timestamp": "2024-01-15T14:22:20Z"
+      }
+    ],
+    "createdAt": "2024-01-15T14:22:00Z",
+    "updatedAt": "2024-01-15T14:22:20Z"
+  }
+]

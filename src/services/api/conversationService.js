@@ -20,7 +20,7 @@ async getById(id) {
         try {
           const conversation = this.conversations.find(c => c.Id === parseInt(id));
           if (conversation) {
-            resolve({ ...conversation });
+            resolve({ ...conversation, id: conversation.Id });
           } else {
             reject(new Error(`Conversation with ID ${id} not found`));
           }
@@ -31,7 +31,7 @@ async getById(id) {
     });
   }
 
-  async create(conversationData) {
+async create(conversationData) {
     return new Promise((resolve) => {
       setTimeout(() => {
         const newConversation = {
@@ -43,7 +43,7 @@ async getById(id) {
         };
         
         this.conversations.push(newConversation);
-        resolve({ ...newConversation });
+        resolve({ ...newConversation, id: newConversation.Id });
       }, 250);
     });
   }
@@ -52,6 +52,11 @@ async update(id, updates) {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         try {
+          if (!id || id === 'undefined') {
+            reject(new Error(`Cannot update: Invalid conversation ID ${id}`));
+            return;
+          }
+          
           const index = this.conversations.findIndex(c => c.Id === parseInt(id));
           if (index !== -1) {
             this.conversations[index] = {
@@ -60,7 +65,7 @@ async update(id, updates) {
               Id: parseInt(id),
               updatedAt: new Date().toISOString()
             };
-            resolve({ ...this.conversations[index] });
+            resolve({ ...this.conversations[index], id: this.conversations[index].Id });
           } else {
             reject(new Error(`Cannot update: Conversation with ID ${id} not found`));
           }

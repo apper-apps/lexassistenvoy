@@ -66,16 +66,25 @@ const [conversation, setConversation] = useState(null);
         timestamp: new Date()
       };
 
-      setConversation(prev => ({
+setConversation(prev => ({
         ...prev,
         messages: [...prev.messages, assistantMessage]
       }));
 
-      // Update conversation in service
-      await conversationService.update(conversation.id, {
-        messages: [...conversation.messages, userMessage, assistantMessage]
-      });
-
+      // Update conversation in service with proper validation
+      if (conversation?.id) {
+        try {
+          await conversationService.update(conversation.id, {
+            messages: [...conversation.messages, userMessage, assistantMessage]
+          });
+        } catch (updateError) {
+          console.error('Failed to update conversation:', updateError);
+          toast.error('Failed to save conversation updates');
+        }
+      } else {
+        console.warn('Cannot update conversation: missing or invalid ID');
+        toast.warn('Conversation not saved - missing ID');
+      }
 } catch (error) {
       console.error("Error sending message:", error);
       toast.error("Failed to get AI response. Please try again or check your connection.");

@@ -18,8 +18,9 @@ export const useConversation = (conversationId) => {
     try {
       const data = await conversationService.getById(conversationId);
       setConversation(data);
-    } catch (err) {
-      setError(err.message);
+} catch (err) {
+      const errorMessage = err?.message || err?.toString() || "Failed to fetch conversation";
+      setError(errorMessage);
       console.error("Error fetching conversation:", err);
     } finally {
       setLoading(false);
@@ -31,8 +32,9 @@ export const useConversation = (conversationId) => {
       const updated = await conversationService.update(conversationId, updates);
       setConversation(updated);
       return updated;
-    } catch (err) {
-      setError(err.message);
+} catch (err) {
+      const errorMessage = err?.message || err?.toString() || "Failed to update conversation";
+      setError(errorMessage);
       throw err;
     }
   };

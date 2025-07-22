@@ -24,8 +24,9 @@ async getById(id) {
           } else {
             reject(new Error(`Conversation with ID ${id} not found`));
           }
-        } catch (error) {
-          reject(new Error("Failed to retrieve conversation"));
+} catch (error) {
+          const errorMessage = error?.message || "Failed to retrieve conversation";
+          reject(new Error(errorMessage));
         }
       }, 200);
     });
@@ -69,8 +70,9 @@ async update(id, updates) {
           } else {
             reject(new Error(`Cannot update: Conversation with ID ${id} not found`));
           }
-        } catch (error) {
-          reject(new Error("Failed to update conversation"));
+} catch (error) {
+          const errorMessage = error?.message || "Failed to update conversation";
+          reject(new Error(errorMessage));
         }
       }, 300);
     });
@@ -87,8 +89,9 @@ async delete(id) {
           } else {
             reject(new Error(`Cannot delete: Conversation with ID ${id} not found`));
           }
-        } catch (error) {
-          reject(new Error("Failed to delete conversation"));
+} catch (error) {
+          const errorMessage = error?.message || "Failed to delete conversation";
+          reject(new Error(errorMessage));
         }
       }, 200);
     });

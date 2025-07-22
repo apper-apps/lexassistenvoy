@@ -87,7 +87,8 @@ setConversation(prev => ({
       }
 } catch (error) {
       console.error("Error sending message:", error);
-      toast.error("Failed to get AI response. Please try again or check your connection.");
+      const errorMessage = error?.message || error?.toString() || "Failed to get AI response. Please try again or check your connection.";
+      toast.error(errorMessage);
       
       // Add a fallback response for better user experience
       const fallbackMessage = {
@@ -205,10 +206,11 @@ ${message.toLowerCase().includes("contract") ? "I see you're asking about contra
 What would you like to work on today? You can upload a document or select a tool from the sidebar to get started.`
 };
 
-      return responses[tool] || responses.general;
+return responses[tool] || responses.general;
     } catch (error) {
       console.error("AI Response generation failed:", error);
-      throw new Error("Unable to generate response at this time");
+      const errorMessage = error?.message || error?.toString() || "Unable to generate response at this time";
+      throw new Error(errorMessage);
     }
 };
 
